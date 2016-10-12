@@ -23,20 +23,22 @@ let str = String(b"this is a test\xed\x80")
 end
 
 ## Reverse of String
-@test reverse("") == ""
-@test reverse("a") == "a"
-@test reverse("abc") == "cba"
-@test reverse("xyz\uff\u800\uffff\U10ffff") == "\U10ffff\uffff\u800\uffzyx"
-for str in [
-    b"xyz\xc1",
-    b"xyz\xd0",
-    b"xyz\xe0",
-    b"xyz\xed\x80",
-    b"xyz\xf0",
-    b"xyz\xf0\x80",
-    b"xyz\xf0\x80\x80"
-]
-    @test_throws UnicodeError reverse(String(str))
+@testset "Reverse of String" begin
+    @test reverse("") == ""
+    @test reverse("a") == "a"
+    @test reverse("abc") == "cba"
+    @test reverse("xyz\uff\u800\uffff\U10ffff") == "\U10ffff\uffff\u800\uffzyx"
+    @testset "should throw UnicodeError" for str in [
+        b"xyz\xc1",
+        b"xyz\xd0",
+        b"xyz\xe0",
+        b"xyz\xed\x80",
+        b"xyz\xf0",
+        b"xyz\xf0\x80",
+        b"xyz\xf0\x80\x80"
+    ]
+        @test_throws UnicodeError reverse(String(str))
+    end
 end
 
 ## Specifically check UTF-8 string whose lead byte is same as a surrogate
